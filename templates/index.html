@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Python Flask</title>
+  <title>Flower CNN</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,700;1,400;1,700&display=swap"
@@ -54,7 +54,7 @@
                 (jpg/png) and we will let you know what kind of it.</p>
               <div class="relative flex flex-col sm:flex-row sm:space-x-4">
                 <label for="upload"
-                  class="flex items-center w-full px-6 py-3 mb-3 text-lg text-white bg-indigo-500 sm:mb-0 hover:bg-indigo-600 sm:w-auto rounded-none rounded-lg cursor-pointer">
+                  class="flex items-center w-full px-6 py-3 mb-3 text-lg text-white bg-indigo-500 sm:mb-0 hover:bg-indigo-600 sm:w-auto rounded-none rounded-lg cursor-pointer hover:shadow-md transition ease-in delay-150">
                   Choose File</label>
                 <input type="file" id="upload" class="hidden" accept="image/png, image/jpeg" />
               </div>
@@ -63,7 +63,7 @@
           </div>
           <div class="w-full md:w-1/2">
             <div class="w-full h-auto overflow-hidden shadow-xl rounded-none rounded-lg">
-              <img src="https://cdn.devdojo.com/images/november2020/hero-image.jpeg" class="">
+              <img src="{{imagesource}}">
             </div>
           </div>
         </div>
@@ -91,7 +91,6 @@
       </div>
     </section>
   </div>
-
 </body>
 
 </html>
