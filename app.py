@@ -12,8 +12,12 @@ from werkzeug.utils import secure_filename
 img_width, img_height = 150, 150
 model_path = './models/model.h5'
 model_weights_path = './models/weights.h5'
+# MODEL_PATH = 'https://github.com/fchollet/deep-learning-models/releases/download/v0.1/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5'
+# import urllib.request
+
+# urllib.request.urlretrieve(MODEL_PATH, './models/model.h5')
 model = load_model(model_path)
-# model.load_weights(model_weights_path)
+model.load_weights(model_weights_path)
 
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png'}
@@ -99,5 +103,7 @@ app.wsgi_app = SharedDataMiddleware(app.wsgi_app, {
     '/uploads': app.config['UPLOAD_FOLDER']
 })
 
-if __name__ == '__main__':
-    app.run(debug=True)
+
+if __name__ == "__main__":
+    app.debug=True
+    app.run(host='0.0.0.0')
