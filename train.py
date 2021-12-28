@@ -41,7 +41,7 @@ from keras.layers import Dropout, Flatten, Dense, Activation
 from keras.layers.convolutional import Convolution2D, MaxPooling2D
 from keras import callbacks
 
-DEV = False # Set to False if it is ready to production
+DEV = True # Set to False if it is ready to production
 argvs = sys.argv
 argc = len(argvs)
 
