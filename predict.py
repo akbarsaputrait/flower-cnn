@@ -3,14 +3,23 @@
 
 import os
 import numpy as np
+from keras.engine.saving import model_from_json
 from keras.preprocessing.image import ImageDataGenerator, load_img, img_to_array
 from keras.models import Sequential, load_model
 
 img_width, img_height = 150, 150
 model_path = './models/model.h5'
 model_weights_path = './models/weights.h5'
-model = load_model(model_path)
+model_json_path = './models/model.json'
+
+json_file = open(model_json_path, 'r')
+loaded_model_json = json_file.read()
+json_file.close()
+model = model_from_json(loaded_model_json)
 model.load_weights(model_weights_path)
+
+# model = load_model(model_path)
+# model.load_weights(model_weights_path)
 
 
 def predict(file):

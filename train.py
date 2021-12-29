@@ -41,7 +41,7 @@ from keras.layers import Dropout, Flatten, Dense, Activation
 from keras.layers.convolutional import Convolution2D, MaxPooling2D
 from keras import callbacks
 
-DEV = True # Set to False if it is ready to production
+DEV = False  # Set to False if it is ready to production
 argvs = sys.argv
 argc = len(argvs)
 
@@ -130,4 +130,11 @@ target_dir = './models/'
 if not os.path.exists(target_dir):
     os.mkdir(target_dir)
 model.save('./models/model.h5')
+# model.save_weights('./models/weights.h5')
+
+# Saving the model for Future Inferences
+model_json = model.to_json()
+with open("./models/model.json", "w") as json_file:
+    json_file.write(model_json)
+# serialize weights to HDF5
 model.save_weights('./models/weights.h5')

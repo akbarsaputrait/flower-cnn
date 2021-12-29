@@ -3,21 +3,27 @@ import os
 import uuid
 
 import numpy as np
-from flask import Flask, render_template, request, send_from_directory
+from flask import Flask, render_template, request, send_from_directory, url_for
 from keras.preprocessing.image import load_img, img_to_array
 from keras.models import load_model
+from keras.engine.saving import model_from_json
 from werkzeug.middleware.shared_data import SharedDataMiddleware
-from werkzeug.utils import secure_filename
+from werkzeug.utils import secure_filename, redirect
 
 img_width, img_height = 150, 150
 model_path = './models/model.h5'
+model_json_path = './models/model.json'
 model_weights_path = './models/weights.h5'
-# MODEL_PATH = 'https://github.com/fchollet/deep-learning-models/releases/download/v0.1/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5'
-# import urllib.request
 
-# urllib.request.urlretrieve(MODEL_PATH, './models/model.h5')
-model = load_model(model_path)
+json_file = open(model_json_path, 'r')
+loaded_model_json = json_file.read()
+json_file.close()
+model = model_from_json(loaded_model_json)
 model.load_weights(model_weights_path)
+
+# model = load_model(model_path)
+model._make_predict_function()
+# model.load_weights(model_weights_path)
 
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png'}
@@ -30,12 +36,6 @@ def predict(file):
     array = model.predict(x)
     result = array[0]
     answer = np.argmax(result)
-    if answer == 0:
-        print("Label: Daisy")
-    elif answer == 1:
-        print("Label: Rose")
-    elif answer == 2:
-        print("Label: Sunflower")
     return answer
 
 
@@ -58,7 +58,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
-    return render_template('./index.html', label='', imagesource='/static/images/flower-rose.jpg')
+    return render_template('./index.html', label='', latin='', imagesource='/static/images/flower-rose.jpg')
 
 
 @app.route('/submit', methods=['GET', 'POST'])
@@ -73,22 +73,27 @@ def upload_file():
 
             file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(file_path)
-            dumps(file_path)
+
             result = predict(file_path)
             label = ''
+            latin = ''
             if result == 0:
                 label = 'Daisy'
+                latin = 'Bellis Perennis'
             elif result == 1:
                 label = 'Rose'
+                latin = 'Rosa'
             elif result == 2:
                 label = 'Sunflowers'
+                latin = 'Helianthus Annuus'
             print(result)
+            print(label)
             print(file_path)
             filename = my_random_string(6) + filename
 
             os.rename(file_path, os.path.join(app.config['UPLOAD_FOLDER'], filename))
             print("--- %s seconds ---" % str(time.time() - start_time))
-            return render_template('template.html', label=label, imagesource='../uploads/' + filename)
+            return render_template('index.html', label=label, latin=latin, imagesource='../uploads/' + filename)
 
 
 @app.route('/uploads/<filename>')
@@ -103,7 +108,6 @@ app.wsgi_app = SharedDataMiddleware(app.wsgi_app, {
     '/uploads': app.config['UPLOAD_FOLDER']
 })
 
-
 if __name__ == "__main__":
-    app.debug=True
+    app.debug = True
     app.run(host='0.0.0.0')
