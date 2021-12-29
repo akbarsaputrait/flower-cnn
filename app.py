@@ -4,6 +4,7 @@ import uuid
 from urllib.request import urlopen
 
 import numpy as np
+import requests
 from flask import Flask, render_template, request, send_from_directory, url_for
 from keras.preprocessing.image import load_img, img_to_array
 from keras.models import load_model
@@ -21,6 +22,32 @@ loaded_model_json = json_file.read()
 json_file.close()
 model = model_from_json(loaded_model_json)
 # model.load_weights(model_weights_path)
+
+weight_url = 'https://github.com/akbarsaputrait/flower-cnn/releases/download/v0.0.1/weights.h5'
+
+
+def download(url: str, dest_folder: str):
+    if not os.path.exists(dest_folder):
+        os.makedirs(dest_folder)  # create folder if it does not exist
+
+    file_name = url.split('/')[-1].replace(" ", "_")  # be careful with file names
+    file_path = os.path.join(dest_folder, file_name)
+
+    r = requests.get(url, stream=True)
+    if r.ok:
+        print("saving to", os.path.abspath(file_path))
+        with open(file_path, 'wb') as f:
+            for chunk in r.iter_content(chunk_size=1024 * 8):
+                if chunk:
+                    f.write(chunk)
+                    f.flush()
+                    os.fsync(f.fileno())
+    else:  # HTTP status code 4XX/5XX
+        print("Download failed: status code {}\n{}".format(r.status_code, r.text))
+
+
+download(weight_url, './models/')
+model.load_weights(model_weights_path)
 
 # model = load_model(model_path)
 model._make_predict_function()
