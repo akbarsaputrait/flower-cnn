@@ -2,9 +2,11 @@
 # https://github.com/tatsuyah/CNN-Image-Classifier
 
 import os
+import urllib.request
 from urllib.request import urlopen
 
 import numpy as np
+import requests as requests
 from keras.engine.saving import model_from_json
 from keras.preprocessing.image import ImageDataGenerator, load_img, img_to_array
 from keras.models import Sequential, load_model
@@ -15,11 +17,38 @@ model_weights_path = './models/weights.h5'
 model_json_path = './models/model.json'
 
 # Using JSON Model
-json_file = urlopen('https://github.com/akbarsaputrait/flower-cnn/releases/download/v0.0.1/model.json')
+model_url = 'https://github.com/akbarsaputrait/flower-cnn/releases/download/v0.0.1/model.json'
+json_file = urlopen(model_url)
 loaded_model_json = json_file.read()
 json_file.close()
 model = model_from_json(loaded_model_json)
+
+weight_url = 'https://github.com/akbarsaputrait/flower-cnn/releases/download/v0.0.1/weights.h5'
+
+
+def download(url: str, dest_folder: str):
+    if not os.path.exists(dest_folder):
+        os.makedirs(dest_folder)  # create folder if it does not exist
+
+    file_name = url.split('/')[-1].replace(" ", "_")  # be careful with file names
+    file_path = os.path.join(dest_folder, file_name)
+
+    r = requests.get(url, stream=True)
+    if r.ok:
+        print("saving to", os.path.abspath(file_path))
+        with open(file_path, 'wb') as f:
+            for chunk in r.iter_content(chunk_size=1024 * 8):
+                if chunk:
+                    f.write(chunk)
+                    f.flush()
+                    os.fsync(f.fileno())
+    else:  # HTTP status code 4XX/5XX
+        print("Download failed: status code {}\n{}".format(r.status_code, r.text))
+
+
+download(weight_url, './models/')
 model.load_weights(model_weights_path)
+
 
 # Using H5 Model
 # model = load_model(model_path)
