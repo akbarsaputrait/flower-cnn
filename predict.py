@@ -14,12 +14,14 @@ model_path = './models/model.h5'
 model_weights_path = './models/weights.h5'
 model_json_path = './models/model.json'
 
+# Using JSON Model
 json_file = urlopen('https://github.com/akbarsaputrait/flower-cnn/releases/download/v0.0.1/model.json')
 loaded_model_json = json_file.read()
 json_file.close()
 model = model_from_json(loaded_model_json)
 model.load_weights(model_weights_path)
 
+# Using H5 Model
 # model = load_model(model_path)
 # model.load_weights(model_weights_path)
 

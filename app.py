@@ -20,7 +20,7 @@ json_file = urlopen('https://github.com/akbarsaputrait/flower-cnn/releases/downl
 loaded_model_json = json_file.read()
 json_file.close()
 model = model_from_json(loaded_model_json)
-model.load_weights(model_weights_path)
+# model.load_weights(model_weights_path)
 
 # model = load_model(model_path)
 model._make_predict_function()
