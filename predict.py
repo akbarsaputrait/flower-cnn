@@ -2,6 +2,8 @@
 # https://github.com/tatsuyah/CNN-Image-Classifier
 
 import os
+from urllib.request import urlopen
+
 import numpy as np
 from keras.engine.saving import model_from_json
 from keras.preprocessing.image import ImageDataGenerator, load_img, img_to_array
@@ -12,7 +14,7 @@ model_path = './models/model.h5'
 model_weights_path = './models/weights.h5'
 model_json_path = './models/model.json'
 
-json_file = open(model_json_path, 'r')
+json_file = urlopen('https://github.com/akbarsaputrait/flower-cnn/releases/download/v0.0.1/model.json')
 loaded_model_json = json_file.read()
 json_file.close()
 model = model_from_json(loaded_model_json)
