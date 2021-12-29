@@ -17,14 +17,6 @@ model_path = './models/model.h5'
 model_json_path = './models/model.json'
 model_weights_path = './models/weights.h5'
 
-json_file = urlopen('https://github.com/akbarsaputrait/flower-cnn/releases/download/v0.0.1/model.json')
-loaded_model_json = json_file.read()
-json_file.close()
-model = model_from_json(loaded_model_json)
-# model.load_weights(model_weights_path)
-
-weight_url = 'https://github.com/akbarsaputrait/flower-cnn/releases/download/v0.0.1/weights.h5'
-
 
 def download(url: str, dest_folder: str):
     if not os.path.exists(dest_folder):
@@ -46,12 +38,25 @@ def download(url: str, dest_folder: str):
         print("Download failed: status code {}\n{}".format(r.status_code, r.text))
 
 
+# Using JSON Model
+# model_url = 'https://github.com/akbarsaputrait/flower-cnn/releases/download/v0.0.1/model.json'
+# json_file = urlopen(model_url)
+# loaded_model_json = json_file.read()
+# json_file.close()
+# model = model_from_json(loaded_model_json)
+
+# Using h5 Model
+# model = load_model(model_path)
+# model.load_weights(model_weights_path)
+model_url = 'https://github.com/akbarsaputrait/flower-cnn/releases/download/v0.0.1/model.h5'
+download(model_url, './models/')
+model = load_model(model_path)
+
+weight_url = 'https://github.com/akbarsaputrait/flower-cnn/releases/download/v0.0.1/weights.h5'
 download(weight_url, './models/')
 model.load_weights(model_weights_path)
 
-# model = load_model(model_path)
 model._make_predict_function()
-# model.load_weights(model_weights_path)
 
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png'}
